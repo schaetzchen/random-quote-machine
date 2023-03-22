@@ -1,15 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {createStore} from "redux";
+import quoteReducer from "./quoteReducer";
+import {Provider} from "react-redux";
+import generateQuoteAction from "./generateQuoteAction";
+
+const store = createStore(quoteReducer);
+
+store.dispatch(generateQuoteAction());
+document.body.style.backgroundColor = store.getState().color;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    <Provider store={store} >
+        <App />
+    </Provider>
 );
+
+store.subscribe(() => {
+    document.body.style.backgroundColor = store.getState().color;
+    document.getElementById("text").classList.remove("quote__text_invisible");
+    document.getElementById("author").classList.remove("quote__author_invisible");
+});
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
